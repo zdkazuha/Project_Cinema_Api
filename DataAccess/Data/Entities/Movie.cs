@@ -30,15 +30,13 @@ namespace DataAccess.Data.Entities
         [Required]
         public string PosterUrl { get; set; }
 
-        public int? GenresId { get; set; }
-
         // navigation property
 
-        public ICollection<Genre> Genres { get; set; }
+        public ICollection<Genre>? Genres { get; set; }
 
-        public ICollection<Review> Reviews { get; set; }
+        public ICollection<Review>? Reviews { get; set; }
 
-        public ICollection<MovieActor> MovieActors { get; set; }
+        public ICollection<MovieActor>? MovieActors { get; set; }
 
     }
 }

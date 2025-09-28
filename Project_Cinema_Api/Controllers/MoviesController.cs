@@ -34,20 +34,16 @@ namespace Project_Cinema_Api.Controllers
 
             var movie = db.Movies.Find(id);
 
-            if(movie == null)
-            {
-                return NotFound("Movie not found");
-            }
-
             return Ok(movie);
         }
 
-        [HttpGet]
+        [HttpPost]
         public IActionResult Created(Movie movie)
         {
-            if(ModelState.IsValid)
+
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Invalid movie data");
+                return BadRequest(ModelState);
             }
 
             db.Movies.Add(movie);
@@ -56,13 +52,17 @@ namespace Project_Cinema_Api.Controllers
             return CreatedAtAction(
                 nameof(GetMovieById),
                 new { id = movie.Id },
-                movie
-                );
+                movie);
         }
 
         [HttpPut]
         public IActionResult Edit(Movie movie)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             db.Movies.Update(movie);
             db.SaveChanges();
 
@@ -72,6 +72,11 @@ namespace Project_Cinema_Api.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid Id");
+            }
+
             db.Movies.Remove(db.Movies.Find(id));
             db.SaveChanges();
 

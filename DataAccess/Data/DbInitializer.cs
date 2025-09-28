@@ -23,7 +23,6 @@ namespace DataAccess.Data
                     Budget = 93000000,
                     ReleaseDate = new DateTime(2001, 12, 19),
                     PosterUrl = "https://m.media-amazon.com/images/I/51Qvs9i5a%2BL._AC_.jpg",
-                    GenresId = 1
                 },
                 new Movie()
                 {
@@ -34,7 +33,6 @@ namespace DataAccess.Data
                     Budget = 180000000,
                     ReleaseDate = new DateTime(2012, 12, 14),
                     PosterUrl = "https://m.media-amazon.com/images/I/81t2CVWEsUL._AC_SL1500_.jpg",
-                    GenresId = 1
                 },
                 new Movie()
                 {
@@ -45,7 +43,6 @@ namespace DataAccess.Data
                     Budget = 125000000,
                     ReleaseDate = new DateTime(2001, 11, 16),
                     PosterUrl = "https://m.media-amazon.com/images/I/51UoqRAxwEL._AC_.jpg",
-                    GenresId = 2
                 }
             });
         }
