@@ -95,8 +95,8 @@ namespace DataAccess.Data
         {
             modelBuilder.Entity<Review>().HasData(new[]
             {
-                new Review() { Id = 1, UserName = "JohnDoe", Comment = "Amazing movie!", MovieId = 1 },
-                new Review() { Id = 2, UserName = "JaneSmith", Comment = "Loved the adventure.", MovieId = 2 }
+                new Review() { Id = 1, Comment = "Amazing movie!", MovieId = 1, UserId = 1 },
+                new Review() { Id = 2, Comment = "Loved the adventure.", MovieId = 2, UserId = 2 }
             });
         }
     }

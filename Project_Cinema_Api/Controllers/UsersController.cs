@@ -1,83 +1,82 @@
 ﻿using AutoMapper;
+using BusinessLogic.DTOs.UserDto;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using BusinessLogic.DTOs.MovieDto;
 
 namespace Project_Cinema_Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MoviesController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly CinemaDbContext db;
         private readonly IMapper mapper;
 
-        public MoviesController(CinemaDbContext db, IMapper mapper )
+        public UsersController(CinemaDbContext db, IMapper mapper)
         {
             this.db = db;
             this.mapper = mapper;
         }
 
         [HttpGet("All")]
-        public IActionResult GetMovies()
+        public IActionResult GetUsers()
         {
-            var movies = db.Movies.ToList();
+            var users = db.Users.ToList();
 
-            var moviesDto = mapper.Map<IEnumerable<MovieDto>>(movies);
+            var usersDto = mapper.Map<IEnumerable<UserDto>>(users);
 
-            return Ok(moviesDto);
+            return Ok(usersDto);
         }
 
         [HttpGet]
-        public IActionResult GetMovieById(int id)
+        public IActionResult GetUserById(int id)
         {
-            if(id <= 0)
+            if (id <= 0)
             {
                 return BadRequest("Invalid Id");
             }
 
-            var movie = db.Movies.Find(id);
+            var user = db.Users.Find(id);
 
-            if(movie == null)
+            if (user == null)
             {
-                return NotFound("Movie not found");
+                return NotFound("User not found");
             }
 
-            var movieDto = mapper.Map<MovieDto>(movie);
+            var userDto = mapper.Map<UserDto>(user);
 
-            return Ok(movieDto);
+            return Ok(userDto);
         }
 
         [HttpPost]
-        public IActionResult Created(CreateMovieDto createMovie)
+        public IActionResult Create(CreateUserDto createUser)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var movie = mapper.Map<Movie>(createMovie);
+            var user = mapper.Map<User>(createUser);
 
-            db.Movies.Add(movie);
+            db.Users.Add(user);
             db.SaveChanges();
-
-            var movieDto = mapper.Map<MovieDto>(movie);
 
             return Ok();
         }
 
         [HttpPut]
-        public IActionResult Edit(EditMovieDto editMovie)
+        public IActionResult Update(EditUserDto editUser)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var movie = mapper.Map<Movie>(editMovie); 
+            var user = mapper.Map<User>(editUser);
 
-            db.Movies.Update(movie);
+            db.Users.Update(user);
             db.SaveChanges();
 
             return Ok();
@@ -86,19 +85,19 @@ namespace Project_Cinema_Api.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            if (id <= 0)
+            if (id < 0)
             {
                 return BadRequest("Invalid Id");
             }
 
-            var movie = db.Movies.Find(id);
+            var user = db.Users.Find(id);
 
-            if(movie == null)
+            if (user == null)
             {
-                return NotFound("Movie not found");
+                return NotFound("User not found");
             }
 
-            db.Movies.Remove(movie);
+            db.Users.Remove(user);
             db.SaveChanges();
 
             return Ok();

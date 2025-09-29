@@ -16,6 +16,6 @@ namespace DataAccess.Data.Entities
         public string Name { get; set; }
 
         // navigation property
-        public ICollection<MovieActor> MovieActors { get; set; }
+        public ICollection<MovieActor>? MovieActors { get; set; }
     }
 }
