@@ -51,7 +51,7 @@ namespace Project_Cinema_Api.Controllers
         {
             movieService.Delete(id);
 
-            return Ok();
+            return NoContent();
         }
     }
 }

@@ -50,7 +50,7 @@ namespace Project_Cinema_Api.Controllers
         {
             genreService.Delete(id);
 
-            return Ok();
+            return NoContent();
         }
 
     }

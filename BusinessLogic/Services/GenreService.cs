@@ -2,6 +2,8 @@
 using BusinessLogic.DTOs.GenreDto;
 using BusinessLogic.Interfaces;
 using DataAccess.Data;
+using DataAccess.Data.Entities;
+using System.Net;
 
 namespace BusinessLogic.Services
 {
@@ -18,17 +20,32 @@ namespace BusinessLogic.Services
 
         public void Create(CreateGenreDto model)
         {
-            throw new NotImplementedException();
+            var genre = mapper.Map<Genre>(model);
+
+            db.Genres.Add(genre);
+            db.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            if (id < 0)
+                throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
+
+            var genre = db.Genres.Find(id);
+
+            if (genre == null)
+                throw new HttpException($"Genre with id-{id} not found ", HttpStatusCode.NotFound);
+
+            db.Genres.Remove(genre);
+            db.SaveChanges();
         }
 
         public void Edit(EditGenreDto model)
         {
-            throw new NotImplementedException();
+            var genre = mapper.Map<Genre>(model);
+
+            db.Genres.Update(genre);
+            db.SaveChanges();
         }
 
         public IList<GenreDto> GetAll()
@@ -42,11 +59,13 @@ namespace BusinessLogic.Services
 
         public GenreDto? Get(int id)
         {
-            if (id <= 0) return null;
+            if (id <= 0)
+                throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
             var genre = db.Genres.Find(id);
 
-            if (genre == null) return null;
+            if (genre == null)
+                throw new HttpException($"Genre with id-{id} not found ", HttpStatusCode.NotFound);
 
             var genreDto = mapper.Map<GenreDto>(genre);
 

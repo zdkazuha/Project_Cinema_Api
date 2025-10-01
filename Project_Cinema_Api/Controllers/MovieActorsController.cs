@@ -4,6 +4,7 @@ using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -53,7 +54,7 @@ namespace Project_Cinema_Api.Controllers
         {
             movieActorService.Delete(id);
 
-            return Ok();
+            return NoContent();
         }
     }
 }

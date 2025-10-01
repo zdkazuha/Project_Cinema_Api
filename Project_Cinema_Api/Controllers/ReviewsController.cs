@@ -52,7 +52,7 @@ namespace Project_Cinema_Api.Controllers
         {
             reviewService.Delete(id);
 
-            return Ok();
+            return NoContent();
         }
     }
 }

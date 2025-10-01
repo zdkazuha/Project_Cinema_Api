@@ -3,6 +3,7 @@ using BusinessLogic.DTOs.ActorDto;
 using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
+using System.Net;
 
 namespace BusinessLogic.Services
 {
@@ -27,11 +28,13 @@ namespace BusinessLogic.Services
 
         public void Delete(int id)
         {
-            if (id < 0) return;
+            if (id < 0)
+                throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
             var actor = db.Actors.Find(id);
 
-            if (actor == null) return;
+            if (actor == null)
+                throw new HttpException($"Actor with id-{id} not found ", HttpStatusCode.NotFound);
 
             db.Actors.Remove(actor);
             db.SaveChanges();
@@ -47,11 +50,13 @@ namespace BusinessLogic.Services
 
         public ActorDto? Get(int id)
         {
-            if (id <= 0) return null;
+            if (id <= 0)
+                throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
             var actor = db.Actors.Find(id);
 
-            if (actor == null) return null;
+            if (actor == null)
+                throw new HttpException($"Actor with id-{id} not found ", HttpStatusCode.NotFound);
 
             var actorDto = mapper.Map<ActorDto>(actor);
 

@@ -48,7 +48,7 @@ namespace Project_Cinema_Api.Controllers
         {
             userService.Delete(id);
 
-            return Ok();
+            return NoContent();
         }
     }
 }

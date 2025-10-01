@@ -4,6 +4,7 @@ using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace BusinessLogic.Services
 {
@@ -28,11 +29,13 @@ namespace BusinessLogic.Services
 
         public void Delete(int id)
         {
-            if (id < 0) return;
+            if (id < 0)
+                throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
             var review = db.Reviews.Find(id);
 
-            if (review == null) return;
+            if (review == null)
+                throw new HttpException($"Review with id-{id} not found ", HttpStatusCode.NotFound);
 
             db.Reviews.Remove(review);
             db.SaveChanges();
@@ -60,11 +63,13 @@ namespace BusinessLogic.Services
 
         public ReviewDto? Get(int id)
         {
-            if (id <= 0) return null;
+            if (id <= 0)
+                throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
             var review = db.Reviews.Find(id);
 
-            if (review == null) return null;
+            if (review == null) 
+                throw new HttpException($"Review with id-{id} not found ", HttpStatusCode.NotFound);
 
             var reviewDto = mapper.Map<ReviewDto>(review);
 
