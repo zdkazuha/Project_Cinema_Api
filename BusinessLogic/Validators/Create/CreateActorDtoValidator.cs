@@ -1,7 +1,7 @@
 ﻿using BusinessLogic.DTOs.ActorDto;
 using FluentValidation;
 
-namespace BusinessLogic.Validators
+namespace BusinessLogic.Validators.Create
 {
     public class CreateActorDtoValidator : AbstractValidator<CreateActorDto>
     {

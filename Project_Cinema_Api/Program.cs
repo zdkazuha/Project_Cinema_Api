@@ -1,5 +1,7 @@
 using BusinessLogic.Configurations;
-using BusinessLogic.Validators;
+using BusinessLogic.Interfaces;
+using BusinessLogic.Services;
+using BusinessLogic.Validators.Create;
 using DataAccess.Data;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -21,10 +23,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateMovieDtoValidator>();
-
+//builder.Services.AddValidatorsFromAssemblyContaining<EditMovieDtoValidator>();
 
 builder.Services.AddDbContext<CinemaDbContext>(options =>
     options.UseSqlServer(someeStr));
+
+builder.Services.AddScoped<IMovieActorService, MovieActorService>();
+builder.Services.AddScoped<IActorService, ActorService>();
+builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
 
 var app = builder.Build();
 

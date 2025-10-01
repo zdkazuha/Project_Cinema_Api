@@ -1,12 +1,16 @@
 ﻿using BusinessLogic.DTOs.MovieDto;
 using FluentValidation;
 
-namespace BusinessLogic.Validators
+namespace BusinessLogic.Validators.Create
 {
-    public class CreateMovieDtoValidator : AbstractValidator<CreateMovieDto>
+    public class EditMovieDtoValidator : AbstractValidator<EditMovieDto>
     {
-        public CreateMovieDtoValidator()
+        public EditMovieDtoValidator()
         {
+            RuleFor(x => x.Id)
+                .NotEmpty().WithMessage("Id is required")
+                .NotNull().WithMessage("Id cannot be null");
+
             RuleFor(x => x.Title)
                 .NotEmpty().WithMessage("Title is required")
                 .MinimumLength(3).WithMessage("Title must be at least 3 characters long")

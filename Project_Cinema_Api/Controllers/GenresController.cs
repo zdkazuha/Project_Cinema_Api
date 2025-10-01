@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using BusinessLogic.DTOs.GenreDto;
-using DataAccess.Data;
-using DataAccess.Data.Entities;
+﻿using BusinessLogic.DTOs.GenreDto;
+using BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Project_Cinema_Api.Controllers
@@ -10,63 +8,39 @@ namespace Project_Cinema_Api.Controllers
     [ApiController]
     public class GenresController : ControllerBase
     {
-        private readonly CinemaDbContext db;
-        private readonly IMapper mapper;
+        private readonly IGenreService genreService;
 
-        public GenresController(CinemaDbContext db, IMapper mapper)
+        public GenresController(IGenreService genreService)
         {
-            this.db = db;
-            this.mapper = mapper;
+            this.genreService = genreService;
         }
 
         [HttpGet("All")]
         public IActionResult GetGenres()
         {
-            var genres = db.Genres.ToList();
-
-            var genresDto = mapper.Map<IEnumerable<GenreDto>>(genres);
-
-            return Ok(genresDto);
+            return Ok(genreService.GetAll());
         }
 
         [HttpGet]
         public IActionResult GetGenreById(int id)
         {
-            if (id <= 0)
-            {
-                return BadRequest("Invalid Id");
-            }
+            genreService.Get(id);
 
-            var genre = db.Genres.Find(id);
-
-            if (genre == null)
-            {
-                return NotFound("Genre not found");
-            }
-
-            var genreDto = mapper.Map<GenreDto>(genre);
-
-            return Ok(genreDto);
+            return Ok(genreService.Get(id));
         }
 
         [HttpPost]
         public IActionResult Create(CreateGenreDto createGenre)
         {
-            var genre = mapper.Map<Genre>(createGenre);
-
-            db.Genres.Add(genre);
-            db.SaveChanges();
+            genreService.Create(createGenre);
 
             return Ok();
         }
 
         [HttpPut]
-        public IActionResult Update(EditGenreDto editGenre)
+        public IActionResult Edit(EditGenreDto editGenre)
         {
-            var genre = mapper.Map<Genre>(editGenre);
-
-            db.Genres.Update(genre);
-            db.SaveChanges();
+            genreService.Edit(editGenre);
 
             return Ok();
         }
@@ -74,20 +48,7 @@ namespace Project_Cinema_Api.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            if(id < 0)
-            {
-                return BadRequest("Invalid Id");
-            }
-
-            var genre = db.Genres.Find(id);
-
-            if(genre == null)
-            {
-                return NotFound("Genre not found");
-            }
-
-            db.Genres.Remove(genre);
-            db.SaveChanges();
+            genreService.Delete(id);
 
             return Ok();
         }

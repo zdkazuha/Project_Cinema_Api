@@ -1,9 +1,5 @@
-﻿using AutoMapper;
-using BusinessLogic.DTOs.ActorDto;
-using BusinessLogic.DTOs.ActorDto;
-using DataAccess.Data;
-using DataAccess.Data.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using BusinessLogic.DTOs.ActorDto;
+using BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Project_Cinema_Api.Controllers
@@ -12,52 +8,29 @@ namespace Project_Cinema_Api.Controllers
     [ApiController]
     public class ActorsController : ControllerBase
     {
-        private readonly CinemaDbContext db;
-        private readonly IMapper mapper;
+        private readonly IActorService actorService;
 
-        public ActorsController(CinemaDbContext db, IMapper mapper)
+        public ActorsController(IActorService actorService)
         {
-            this.db = db;
-            this.mapper = mapper;
+            this.actorService = actorService;
         }
 
         [HttpGet("All")]
         public IActionResult GetActors()
         {
-            var actors = db.Actors.ToList();
-
-            var actorsDto = mapper.Map<IEnumerable<ActorDto>>(actors);
-
-            return Ok(actorsDto);
+            return Ok(actorService.GetAll());
         }
 
         [HttpGet]
         public IActionResult GetActorById(int id)
         {
-            if (id <= 0)
-            {
-                return BadRequest("Invalid Id");
-            }
-
-            var actor = db.Actors.Find(id);
-
-            if (actor == null)
-            {
-                return NotFound("Actor not found");
-            }
-
-            var actorDto = mapper.Map<ActorDto>(actor);
-
-            return Ok(actorDto);
+           return Ok(actorService.Get(id));
         }
 
         [HttpPost]
         public IActionResult Create(CreateActorDto createActor)
         {
-            var actor = mapper.Map<Actor>(createActor);
-
-            db.Actors.Add(actor);
-            db.SaveChanges();
+            actorService.Create(createActor);
 
             return Ok();
         }
@@ -65,10 +38,7 @@ namespace Project_Cinema_Api.Controllers
         [HttpPut]
         public IActionResult Update(EditActorDto editActor)
         {
-            var actor = mapper.Map<Actor>(editActor);
-
-            db.Actors.Update(actor);
-            db.SaveChanges();
+            actorService.Edit(editActor);
 
             return Ok();
         }
@@ -76,20 +46,7 @@ namespace Project_Cinema_Api.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            if (id < 0)
-            {
-                return BadRequest("Invalid Id");
-            }
-
-            var actor = db.Actors.Find(id);
-
-            if (actor == null)
-            {
-                return NotFound("Actor not found");
-            }
-
-            db.Actors.Remove(actor);
-            db.SaveChanges();
+            actorService.Delete(id);
 
             return Ok();
         }

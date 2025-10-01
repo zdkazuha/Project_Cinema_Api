@@ -1,12 +1,16 @@
 ﻿using BusinessLogic.DTOs.ReviewDto;
 using FluentValidation;
 
-namespace BusinessLogic.Validators
+namespace BusinessLogic.Validators.Create
 {
-    public class CreateReviewDtoValidator : AbstractValidator<CreateReviewDto>
+    public class EditReviewDtoValidator : AbstractValidator<EditReviewDto>
     {
-        public CreateReviewDtoValidator()
+        public EditReviewDtoValidator()
         {
+            RuleFor(x => x.Id)
+                .NotEmpty().WithMessage("Id is required")
+                .NotNull().WithMessage("Id cannot be null");
+
             RuleFor(x => x.Comment)
                 .NotEmpty().WithMessage("Comment is required")
                 .MinimumLength(10).WithMessage("Comment must be at least 10 characters long");

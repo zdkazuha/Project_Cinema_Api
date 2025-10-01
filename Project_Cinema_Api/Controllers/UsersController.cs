@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using BusinessLogic.DTOs.UserDto;
-using DataAccess.Data;
-using DataAccess.Data.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using BusinessLogic.DTOs.UserDto;
+using BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Project_Cinema_Api.Controllers
@@ -11,63 +8,37 @@ namespace Project_Cinema_Api.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly CinemaDbContext db;
-        private readonly IMapper mapper;
+        private readonly IUserService userService;
 
-        public UsersController(CinemaDbContext db, IMapper mapper)
+        public UsersController(IUserService userService)
         {
-            this.db = db;
-            this.mapper = mapper;
+            this.userService = userService;
         }
 
         [HttpGet("All")]
         public IActionResult GetUsers()
         {
-            var users = db.Users.ToList();
-
-            var usersDto = mapper.Map<IEnumerable<UserDto>>(users);
-
-            return Ok(usersDto);
+            return Ok(userService.GetAll());
         }
 
         [HttpGet]
         public IActionResult GetUserById(int id)
         {
-            if (id <= 0)
-            {
-                return BadRequest("Invalid Id");
-            }
-
-            var user = db.Users.Find(id);
-
-            if (user == null)
-            {
-                return NotFound("User not found");
-            }
-
-            var userDto = mapper.Map<UserDto>(user);
-
-            return Ok(userDto);
+            return Ok(userService.Get(id));
         }
 
         [HttpPost]
         public IActionResult Create(CreateUserDto createUser)
         {
-            var user = mapper.Map<User>(createUser);
-
-            db.Users.Add(user);
-            db.SaveChanges();
+            userService.Create(createUser);
 
             return Ok();
         }
 
         [HttpPut]
-        public IActionResult Update(EditUserDto editUser)
+        public IActionResult Edit(EditUserDto editUser)
         {
-            var user = mapper.Map<User>(editUser);
-
-            db.Users.Update(user);
-            db.SaveChanges();
+            userService.Edit(editUser);
 
             return Ok();
         }
@@ -75,20 +46,7 @@ namespace Project_Cinema_Api.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            if (id < 0)
-            {
-                return BadRequest("Invalid Id");
-            }
-
-            var user = db.Users.Find(id);
-
-            if (user == null)
-            {
-                return NotFound("User not found");
-            }
-
-            db.Users.Remove(user);
-            db.SaveChanges();
+            userService.Delete(id);
 
             return Ok();
         }

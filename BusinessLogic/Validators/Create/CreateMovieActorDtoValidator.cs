@@ -1,7 +1,7 @@
 ﻿using BusinessLogic.DTOs.MovieActorDto;
 using FluentValidation;
 
-namespace BusinessLogic.Validators
+namespace BusinessLogic.Validators.Create
 {
     public class CreateMovieActorDtoValidator : AbstractValidator<CreateMovieActorDto>
     {

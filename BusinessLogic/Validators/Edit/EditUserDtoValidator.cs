@@ -1,12 +1,16 @@
-﻿using BusinessLogic.DTOs.UserDto;
+﻿using BusinessLogic.DTOs.ReviewDto;
+using BusinessLogic.DTOs.UserDto;
 using FluentValidation;
 
-namespace BusinessLogic.Validators
+namespace BusinessLogic.Validators.Create
 {
-    public class CreateUserDtoValidator : AbstractValidator<CreateUserDto>
+    public class EditUserDtoValidator : AbstractValidator<EditUserDto>
     {
-        public CreateUserDtoValidator()
+        public EditUserDtoValidator()
         {
+            RuleFor(x => x.Id)
+                .NotEmpty().WithMessage("Id is required");
+
             RuleFor(x => x.UserName)
                 .NotEmpty().WithMessage("UserName is required")
                 .MinimumLength(3).WithMessage("UserName must be at least 3 characters long")
