@@ -56,11 +56,6 @@ namespace Project_Cinema_Api.Controllers
         [HttpPost]
         public IActionResult Create(CreateReviewDto createReview)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var review = mapper.Map<Review>(createReview);
 
             db.Reviews.Add(review);
@@ -72,11 +67,6 @@ namespace Project_Cinema_Api.Controllers
         [HttpPut]
         public IActionResult Update(EditReviewDto editReview)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var review = mapper.Map<Review>(editReview);
 
             db.Reviews.Update(review);

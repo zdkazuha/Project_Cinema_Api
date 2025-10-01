@@ -9,10 +9,8 @@ namespace DataAccess.Data.Entities
 {
     public class Actor
     {
-        [Key]
         public int Id { get; set; }
 
-        [Required, MinLength(3)]
         public string Name { get; set; }
 
         // navigation property

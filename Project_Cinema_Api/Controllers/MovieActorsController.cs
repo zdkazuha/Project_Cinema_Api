@@ -56,11 +56,6 @@ namespace Project_Cinema_Api.Controllers
         [HttpPost]
         public IActionResult Create(CreateMovieActorDto createMovieActor)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var movieActor = mapper.Map<MovieActor>(createMovieActor);
 
             db.MovieActors.Add(movieActor);
@@ -72,11 +67,6 @@ namespace Project_Cinema_Api.Controllers
         [HttpPut]
         public IActionResult Update(EditMovieActorDto editMovieActor)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var movieActor = mapper.Map<MovieActor>(editMovieActor);
 
             db.MovieActors.Update(movieActor);

@@ -10,16 +10,12 @@ namespace DataAccess.Data.Entities
 {
     public class MovieActor
     {
-        [Key]
         public int Id { get; set; }
 
-        [Required, MinLength(3)]
         public string CharacterName { get; set; }
 
-        [Required]
         public int MovieId { get; set; }
 
-        [Required]
         public int ActorId { get; set; }
 
         // navigation property

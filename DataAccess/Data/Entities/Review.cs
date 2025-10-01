@@ -10,16 +10,12 @@ namespace DataAccess.Data.Entities
 {
     public class Review
     {
-        [Key]
         public int Id{ get; set; }
 
-        [Required, MinLength(10)]
         public string Comment { get; set; }
 
-        [Required]
         public int MovieId { get; set; }
 
-        [Required]
         public int UserId { get; set; }
 
         // navigation property

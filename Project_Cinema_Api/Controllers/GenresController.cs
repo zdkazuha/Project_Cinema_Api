@@ -52,11 +52,6 @@ namespace Project_Cinema_Api.Controllers
         [HttpPost]
         public IActionResult Create(CreateGenreDto createGenre)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var genre = mapper.Map<Genre>(createGenre);
 
             db.Genres.Add(genre);
@@ -68,11 +63,6 @@ namespace Project_Cinema_Api.Controllers
         [HttpPut]
         public IActionResult Update(EditGenreDto editGenre)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var genre = mapper.Map<Genre>(editGenre);
 
             db.Genres.Update(genre);
