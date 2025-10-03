@@ -63,11 +63,17 @@ namespace BusinessLogic.Services
             return actorDto;
         }
 
-        public IList<ActorDto> GetAll()
+        public IList<ActorDto> GetAll(string? ActorName)
         {
-            var actors = db.Actors.ToList();
+            IQueryable<Actor> actors = db.Actors;
 
-            var actorsDto = mapper.Map<IList<ActorDto>>(actors);
+            if (ActorName != null)
+            {
+                actors = db.Actors
+                    .Where(x => x.Name.Contains(ActorName.ToLower()));
+            }
+
+            var actorsDto = mapper.Map<IList<ActorDto>>(actors.ToList());
 
             return actorsDto;
         }

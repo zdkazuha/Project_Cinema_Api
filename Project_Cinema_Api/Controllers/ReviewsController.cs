@@ -20,9 +20,9 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpGet("All")]
-        public IActionResult GetReviews()
+        public IActionResult GetReviews(string? Comment, string? UserName, string? MovieTitle)
         {
-            return Ok(reviewService.GetAll());
+            return Ok(reviewService.GetAll(Comment, UserName, MovieTitle));
         }
 
         [HttpGet]

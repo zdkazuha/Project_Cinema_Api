@@ -16,9 +16,9 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpGet("All")]
-        public IActionResult GetGenres()
+        public IActionResult GetGenres(string? GenreName)
         {
-            return Ok(genreService.GetAll());
+            return Ok(genreService.GetAll(GenreName));
         }
 
         [HttpGet]

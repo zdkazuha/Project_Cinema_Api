@@ -4,7 +4,7 @@ namespace BusinessLogic.Interfaces
 {
     public interface IReviewService
     {
-        IList<ReviewDto> GetAll();
+        IList<ReviewDto> GetAll(string? Comment, string? UserName, string? MovieTitle);
         ReviewDto? Get(int id);
         void Create(CreateReviewDto model);
         void Edit(EditReviewDto model);

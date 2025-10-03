@@ -49,14 +49,31 @@ namespace BusinessLogic.Services
             db.SaveChanges();
         }
 
-        public IList<ReviewDto> GetAll()
+        public IList<ReviewDto> GetAll(string? Comment, string? UserName, string? MovieTitle)
         {
-            var reviews = db.Reviews
+            IQueryable<Review> reviews = db.Reviews
                 .Include(x => x.Movie)
-                .Include(x => x.User)
-                .ToList();
+                .Include(x => x.User);
 
-            var reviewsDto = mapper.Map<IList<ReviewDto>>(reviews);
+            if (Comment != null)
+            {
+                reviews = reviews
+                    .Where(x => x.Comment.Contains(Comment.ToLower()));
+            }
+
+            if (UserName != null)
+            {
+                reviews = reviews
+                    .Where(x => x.User.UserName.Contains(UserName.ToLower()));
+            }
+
+            if (MovieTitle != null)
+            {
+                reviews = reviews
+                    .Where(x => x.Movie.Title.Contains(MovieTitle.ToLower()));
+            }
+
+            var reviewsDto = mapper.Map<IList<ReviewDto>>(reviews.ToList());
 
             return reviewsDto;
         }

@@ -16,9 +16,9 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpGet("All")]
-        public IActionResult GetActors()
+        public IActionResult GetActors(string? ActorName)
         {
-            return Ok(actorService.GetAll());
+            return Ok(actorService.GetAll(ActorName));
         }
 
         [HttpGet]

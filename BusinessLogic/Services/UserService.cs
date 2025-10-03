@@ -48,11 +48,17 @@ namespace BusinessLogic.Services
             db.SaveChanges();
         }
 
-        public IList<UserDto> GetAll()
+        public IList<UserDto> GetAll(string? UserName)
         {
-            var users = db.Users.ToList();
+            IQueryable<User> users = db.Users;
 
-            var usersDto = mapper.Map<IList<UserDto>>(users);
+            if (UserName != null)
+            {
+                users = db.Users
+                    .Where(x => x.UserName.Contains(UserName.ToLower()));
+            }
+
+            var usersDto = mapper.Map<IList<UserDto>>(users.ToList());
 
             return usersDto;
         }

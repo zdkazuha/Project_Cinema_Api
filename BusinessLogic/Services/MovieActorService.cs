@@ -49,14 +49,31 @@ namespace BusinessLogic.Services
             db.SaveChanges();
         }
 
-        public IList<MovieActorDto> GetAll()
+        public IList<MovieActorDto> GetAll(string? ActorName, string? MovieTitle, string? CharacterName)
         {
-            var movieActors = db.MovieActors
+            IQueryable<MovieActor> movieActors = db.MovieActors
                 .Include(x => x.Movie)
-                .Include(x => x.Actor)
-                .ToList();
+                .Include(x => x.Actor);
 
-            var movieActorsDto = mapper.Map<IList<MovieActorDto>>(movieActors);
+            if (ActorName != null)
+            {
+                movieActors = movieActors
+                    .Where(x => x.Actor.Name.Contains(ActorName.ToLower()));
+            }
+
+            if (MovieTitle != null)
+            {
+                movieActors = movieActors
+                    .Where(x => x.Movie.Title.Contains(MovieTitle.ToLower()));
+            }
+
+            if (CharacterName != null)
+            {
+                movieActors = movieActors
+                    .Where(x => x.CharacterName.Contains(CharacterName.ToLower()));
+            }
+
+            var movieActorsDto = mapper.Map<IList<MovieActorDto>>(movieActors.ToList());
 
             return movieActorsDto;
         }

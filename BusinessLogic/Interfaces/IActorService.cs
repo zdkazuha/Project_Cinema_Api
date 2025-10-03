@@ -4,7 +4,7 @@ namespace BusinessLogic.Interfaces
 {
     public interface IActorService
     {
-        IList<ActorDto> GetAll();
+        IList<ActorDto> GetAll(string? ActorName);
         ActorDto? Get(int id);
         void Create(CreateActorDto model);
         void Edit(EditActorDto model);

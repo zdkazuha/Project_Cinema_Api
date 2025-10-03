@@ -48,11 +48,17 @@ namespace BusinessLogic.Services
             db.SaveChanges();
         }
 
-        public IList<GenreDto> GetAll()
+        public IList<GenreDto> GetAll(string? GenreName)
         {
-            var genres = db.Genres.ToList();
+            IQueryable<Genre> genres = db.Genres;
 
-            var genresDto = mapper.Map<IList<GenreDto>>(genres);
+            if (GenreName != null)
+            {
+                genres = db.Genres
+                    .Where(g => g.Name.Contains(GenreName.ToLower()));
+            }
+
+            var genresDto = mapper.Map<IList<GenreDto>>(genres.ToList());
 
             return genresDto;
         }

@@ -48,11 +48,36 @@ namespace BusinessLogic.Services
             db.SaveChanges();
         }
 
-        public IList<MovieDto> GetAll()
+        public IList<MovieDto> GetAll(string? Title, string? Overview, double? Rating, bool? sortByBudgetAscending)
         {
-            var movies = db.Movies.ToList();
+            IQueryable<Movie> movies = db.Movies;
 
-            var moviesDto = mapper.Map<IList<MovieDto>>(movies);
+            if (Title != null)
+            {
+                movies = movies
+                    .Where(x => x.Title.Contains(Title.ToLower()));
+            }
+
+            if (Overview != null)
+            {
+                movies = movies
+                    .Where(x => x.Overview.Contains(Overview.ToLower()));
+            }
+
+            if (Rating != null)
+            {
+                movies = movies
+                    .Where(x => x.Rating == Rating);
+            }
+
+            if (sortByBudgetAscending != null)
+            {
+                movies = sortByBudgetAscending == true
+                    ? movies.OrderBy(x => x.Budget)
+                    : movies.OrderByDescending(x => x.Budget);
+            }
+
+            var moviesDto = mapper.Map<IList<MovieDto>>(movies.ToList());
 
             return moviesDto;
         }

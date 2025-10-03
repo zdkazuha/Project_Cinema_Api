@@ -19,9 +19,9 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpGet("All")]
-        public IActionResult GetMovies()
+        public IActionResult GetMovies(string? Title, string? Overview, double? Rating, bool? sortByBudgetAscending)
         {
-            return Ok(movieService.GetAll());
+            return Ok(movieService.GetAll(Title, Overview, Rating, sortByBudgetAscending));
         }
 
         [HttpGet]
