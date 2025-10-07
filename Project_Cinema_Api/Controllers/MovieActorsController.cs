@@ -1,12 +1,7 @@
-﻿using AutoMapper;
-using BusinessLogic.DTOs.MovieActorDto;
+﻿using BusinessLogic.DTOs.MovieActorDto;
 using BusinessLogic.Interfaces;
-using DataAccess.Data;
 using DataAccess.Data.Entities;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Project_Cinema_Api.Controllers
 {
@@ -22,37 +17,37 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpGet("All")]
-        public IActionResult GetMovieActors(string? ActorName, string? MovieTitle, string? CharacterName)
+        public async Task<ActionResult<IEnumerable<MovieActorDto>>> GetMovieActors(string? ActorName, string? MovieTitle, string? CharacterName, int numberPage = 1)
         {
-            return Ok(movieActorService.GetAll(ActorName, MovieTitle, CharacterName));
+            return Ok(await movieActorService.GetAll(ActorName, MovieTitle, CharacterName, numberPage));
         }
 
         [HttpGet]
-        public IActionResult GetMovieActorById(int id)
+        public async Task<ActionResult<MovieActorDto>> GetMovieActorById(int id)
         {
-            return Ok(movieActorService.Get(id));
+            return Ok(await movieActorService.Get(id));
         }
 
         [HttpPost]
-        public IActionResult Create(CreateMovieActorDto createMovieActor)
+        public async Task<ActionResult<MovieActor>> Create(CreateMovieActorDto createMovieActor)
         {
-            movieActorService.Create(createMovieActor);
+            await movieActorService.Create(createMovieActor);
 
             return Ok();
         }
 
         [HttpPut]
-        public IActionResult Edit(EditMovieActorDto editMovieActor)
+        public async Task<ActionResult<MovieActorDto>> Edit(EditMovieActorDto editMovieActor)
         {
-            movieActorService.Edit(editMovieActor);
+            await movieActorService.Edit(editMovieActor);
 
             return Ok();
         }
 
         [HttpDelete]
-        public IActionResult Delete(int id)
+        public async Task<ActionResult<MovieActorDto>> Delete(int id)
         {
-            movieActorService.Delete(id);
+            await movieActorService.Delete(id);
 
             return NoContent();
         }

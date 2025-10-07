@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using DataAccess.Data;
-using DataAccess.Data.Entities;
+﻿using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using BusinessLogic.DTOs.MovieDto;
 using BusinessLogic.Interfaces;
@@ -19,37 +17,42 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpGet("All")]
-        public IActionResult GetMovies(string? Title, string? Overview, double? Rating, bool? sortByBudgetAscending)
+        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies(string? Title, string? Overview, double? Rating, bool? sortByBudgetAscending, int pageNumber = 1)
         {
-            return Ok(movieService.GetAll(Title, Overview, Rating, sortByBudgetAscending));
+            if(pageNumber <= 0)
+            {
+                return BadRequest("Page number must be greater than 0.");
+            }
+
+            return Ok(await movieService.GetAll(Title, Overview, Rating, sortByBudgetAscending, pageNumber));
         }
 
         [HttpGet]
-        public IActionResult GetMovieById(int id)
+        public async Task<ActionResult<MovieDto>> GetMovieById(int id)
         {
-            return Ok(movieService.Get(id));
+            return Ok(await movieService.Get(id));
         }
 
         [HttpPost]
-        public IActionResult Created(CreateMovieDto createMovie)
+        public async Task<ActionResult<Movie>> Created(CreateMovieDto createMovie)
         {
-            movieService.Create(createMovie);
+            await movieService.Create(createMovie);
 
             return Ok();
         }
 
         [HttpPut]
-        public IActionResult Edit(EditMovieDto editMovie)
+        public async Task<ActionResult<MovieDto>> Edit(EditMovieDto editMovie)
         {
-            movieService.Edit(editMovie);
+            await movieService.Edit(editMovie);
 
             return Ok();
         }
 
         [HttpDelete]
-        public IActionResult Delete(int id)
+        public async Task<ActionResult<MovieDto>> Delete(int id)
         {
-            movieService.Delete(id);
+            await movieService.Delete(id);
 
             return NoContent();
         }

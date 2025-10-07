@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs.ReviewDto;
+using BusinessLogic.Helpers;
 using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
@@ -19,15 +20,15 @@ namespace BusinessLogic.Services
             this.mapper = mapper;
         }
 
-        public void Create(CreateReviewDto model)
+        public async Task Create(CreateReviewDto model)
         {
             var review = mapper.Map<Review>(model);
 
             db.Reviews.Add(review);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
             if (id < 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
@@ -38,18 +39,18 @@ namespace BusinessLogic.Services
                 throw new HttpException($"Review with id-{id} not found ", HttpStatusCode.NotFound);
 
             db.Reviews.Remove(review);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
-        public void Edit(EditReviewDto model)
+        public async Task Edit(EditReviewDto model)
         {
             var review = mapper.Map<Review>(model);
 
             db.Reviews.Update(review);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
-        public IList<ReviewDto> GetAll(string? Comment, string? UserName, string? MovieTitle)
+        public async Task<IList<ReviewDto>> GetAll(string? Comment, string? UserName, string? MovieTitle, int numberPage = 1)
         {
             IQueryable<Review> reviews = db.Reviews
                 .Include(x => x.Movie)
@@ -73,17 +74,17 @@ namespace BusinessLogic.Services
                     .Where(x => x.Movie.Title.Contains(MovieTitle.ToLower()));
             }
 
-            var reviewsDto = mapper.Map<IList<ReviewDto>>(reviews.ToList());
+            var reviewsPaged = await PagedList<Review>.CreateAsync(reviews, numberPage, 5);
 
-            return reviewsDto;
+            return mapper.Map<IList<ReviewDto>>(reviewsPaged);
         }
 
-        public ReviewDto? Get(int id)
+        public async Task<ReviewDto?> Get(int id)
         {
             if (id <= 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var review = db.Reviews.Find(id);
+            var review = await db.Reviews.FindAsync(id);
 
             if (review == null) 
                 throw new HttpException($"Review with id-{id} not found ", HttpStatusCode.NotFound);

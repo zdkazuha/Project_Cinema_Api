@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs.ActorDto;
+using BusinessLogic.DTOs.MovieActorDto;
+using BusinessLogic.Helpers;
 using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
@@ -18,15 +20,15 @@ namespace BusinessLogic.Services
             this.mapper = mapper;
         }
 
-        public void Create(CreateActorDto model)
+        public async Task Create(CreateActorDto model)
         {
             var actor = mapper.Map<Actor>(model);
 
             db.Actors.Add(actor);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
             if (id < 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
@@ -37,23 +39,23 @@ namespace BusinessLogic.Services
                 throw new HttpException($"Actor with id-{id} not found ", HttpStatusCode.NotFound);
 
             db.Actors.Remove(actor);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
-        public void Edit(EditActorDto model)
+        public async Task Edit(EditActorDto model)
         {
             var actor = mapper.Map<Actor>(model);
 
             db.Actors.Update(actor);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
-        public ActorDto? Get(int id)
+        public async Task<ActorDto?> Get(int id)
         {
             if (id <= 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var actor = db.Actors.Find(id);
+            var actor = await db.Actors.FindAsync(id);
 
             if (actor == null)
                 throw new HttpException($"Actor with id-{id} not found ", HttpStatusCode.NotFound);
@@ -63,7 +65,7 @@ namespace BusinessLogic.Services
             return actorDto;
         }
 
-        public IList<ActorDto> GetAll(string? ActorName)
+        public async Task<IList<ActorDto>> GetAll(string? ActorName, int pageNumber = 1)
         {
             IQueryable<Actor> actors = db.Actors;
 
@@ -73,9 +75,9 @@ namespace BusinessLogic.Services
                     .Where(x => x.Name.Contains(ActorName.ToLower()));
             }
 
-            var actorsDto = mapper.Map<IList<ActorDto>>(actors.ToList());
+            var actorsPaged = await PagedList<Actor>.CreateAsync(db.Actors, pageNumber, 5);
 
-            return actorsDto;
+            return mapper.Map<IList<ActorDto>>(actorsPaged);
         }
     }
 }

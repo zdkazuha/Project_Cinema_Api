@@ -4,10 +4,10 @@ namespace BusinessLogic.Interfaces
 {
     public interface IMovieService
     {
-        IList<MovieDto>GetAll(string? Title, string? Overview, double? Rating, bool? sortByBudgetAscending);
-        MovieDto? Get(int id);
-        void Create(CreateMovieDto model);
-        void Edit(EditMovieDto model);
-        void Delete(int id);
+        Task<IList<MovieDto>> GetAll(string? Title, string? Overview, double? Rating, bool? sortByBudgetAscending, int pageNumber);
+        Task<MovieDto?> Get(int id);
+        Task Create(CreateMovieDto model);
+        Task Edit(EditMovieDto model);
+        Task Delete(int id);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.DTOs.GenreDto;
 using BusinessLogic.Interfaces;
+using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Project_Cinema_Api.Controllers
@@ -16,39 +17,39 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpGet("All")]
-        public IActionResult GetGenres(string? GenreName)
+        public async Task<ActionResult<IEnumerable<GenreDto>>> GetGenres(string? GenreName, int numberPage = 1)
         {
-            return Ok(genreService.GetAll(GenreName));
+            return Ok(await genreService.GetAll(GenreName, numberPage));
         }
 
         [HttpGet]
-        public IActionResult GetGenreById(int id)
+        public async Task<ActionResult<GenreDto>> GetGenreById(int id)
         {
-            genreService.Get(id);
+            await genreService.Get(id);
 
             return Ok(genreService.Get(id));
         }
 
         [HttpPost]
-        public IActionResult Create(CreateGenreDto createGenre)
+        public async Task<ActionResult<Genre>> Create(CreateGenreDto createGenre)
         {
-            genreService.Create(createGenre);
+            await genreService.Create(createGenre);
 
             return Ok();
         }
 
         [HttpPut]
-        public IActionResult Edit(EditGenreDto editGenre)
+        public async Task<ActionResult<GenreDto>> Edit(EditGenreDto editGenre)
         {
-            genreService.Edit(editGenre);
+            await genreService.Edit(editGenre);
 
             return Ok();
         }
 
         [HttpDelete]
-        public IActionResult Delete(int id)
+        public async Task<ActionResult<GenreDto>> Delete(int id)
         {
-            genreService.Delete(id);
+            await genreService.Delete(id);
 
             return NoContent();
         }

@@ -4,10 +4,10 @@ namespace BusinessLogic.Interfaces
 {
     public interface IUserService
     {
-        IList<UserDto> GetAll(string? UserName);
-        UserDto? Get(int id);
-        void Create(CreateUserDto model);
-        void Edit(EditUserDto model);
-        void Delete(int id);
+        Task<IList<UserDto>> GetAll(string? UserName, int pageNumber);
+        Task<UserDto?> Get(int id);
+        Task Create(CreateUserDto model);
+        Task Edit(EditUserDto model);
+        Task Delete(int id);
     }
 }

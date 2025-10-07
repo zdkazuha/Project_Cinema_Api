@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs.UserDto;
+using BusinessLogic.Helpers;
 using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
@@ -18,15 +19,15 @@ namespace BusinessLogic.Services
             this.mapper = mapper;
         }
 
-        public void Create(CreateUserDto model)
+        public async Task Create(CreateUserDto model)
         {
             var user = mapper.Map<User>(model);
 
             db.Users.Add(user);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
             if (id < 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
@@ -37,18 +38,18 @@ namespace BusinessLogic.Services
                 throw new HttpException($"User with id-{id} not found ", HttpStatusCode.NotFound);
 
             db.Users.Remove(user);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
-        public void Edit(EditUserDto model)
+        public async Task Edit(EditUserDto model)
         {
             var user = mapper.Map<User>(model);
 
             db.Users.Update(user);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
-        public IList<UserDto> GetAll(string? UserName)
+        public async Task<IList<UserDto>> GetAll(string? UserName, int numberPage = 1)
         {
             IQueryable<User> users = db.Users;
 
@@ -58,17 +59,17 @@ namespace BusinessLogic.Services
                     .Where(x => x.UserName.Contains(UserName.ToLower()));
             }
 
-            var usersDto = mapper.Map<IList<UserDto>>(users.ToList());
+            var usersPaged = await PagedList<User>.CreateAsync(users, numberPage, 50);
 
-            return usersDto;
+            return mapper.Map<List<UserDto>>(usersPaged);
         }
 
-        public UserDto? Get(int id)
+        public async Task<UserDto?> Get(int id)
         {
             if (id <= 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var user = db.Users.Find(id);
+            var user = await db.Users.FindAsync(id);
 
             if (user == null)
                 throw new HttpException($"User with id-{id} not found ", HttpStatusCode.NotFound);

@@ -1,10 +1,7 @@
-﻿using AutoMapper;
-using BusinessLogic.DTOs.ReviewDto;
+﻿using BusinessLogic.DTOs.ReviewDto;
 using BusinessLogic.Interfaces;
-using DataAccess.Data;
 using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Project_Cinema_Api.Controllers
 {
@@ -20,37 +17,37 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpGet("All")]
-        public IActionResult GetReviews(string? Comment, string? UserName, string? MovieTitle)
+        public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviews(string? Comment, string? UserName, string? MovieTitle, int numberPage = 1)
         {
-            return Ok(reviewService.GetAll(Comment, UserName, MovieTitle));
+            return Ok(await reviewService.GetAll(Comment, UserName, MovieTitle, numberPage));
         }
 
         [HttpGet]
-        public IActionResult GetreviewById(int id)
+        public async Task<ActionResult<ReviewDto>> GetreviewById(int id)
         {
-            return Ok(reviewService.Get(id));
+            return Ok(await reviewService.Get(id));
         }
 
         [HttpPost]
-        public IActionResult Create(CreateReviewDto createReview)
+        public async Task<ActionResult<Review>> Create(CreateReviewDto createReview)
         {
-            reviewService.Create(createReview);
+            await reviewService.Create(createReview);
 
             return Ok();
         }
 
         [HttpPut]
-        public IActionResult Edit(EditReviewDto editReview)
+        public async Task<ActionResult<ReviewDto>> Edit(EditReviewDto editReview)
         {
-           reviewService.Edit(editReview);
+            await reviewService.Edit(editReview);
 
             return Ok();
         }
 
         [HttpDelete]
-        public IActionResult Delete(int id)
+        public async Task<ActionResult<ReviewDto>> Delete(int id)
         {
-            reviewService.Delete(id);
+            await reviewService.Delete(id);
 
             return NoContent();
         }

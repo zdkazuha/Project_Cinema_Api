@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.DTOs.UserDto;
 using BusinessLogic.Interfaces;
+using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Project_Cinema_Api.Controllers
@@ -16,37 +17,37 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpGet("All")]
-        public IActionResult GetUsers(string? UserName)
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers(string? UserName, int numberPage = 1)
         {
-            return Ok(userService.GetAll(UserName));
+            return Ok(await userService.GetAll(UserName, numberPage));
         }
 
         [HttpGet]
-        public IActionResult GetUserById(int id)
+        public async Task<ActionResult<UserDto>> GetUserById(int id)
         {
-            return Ok(userService.Get(id));
+            return Ok(await userService.Get(id));
         }
 
         [HttpPost]
-        public IActionResult Create(CreateUserDto createUser)
+        public async Task<ActionResult<User>> Create(CreateUserDto createUser)
         {
-            userService.Create(createUser);
+            await userService.Create(createUser);
 
             return Ok();
         }
 
         [HttpPut]
-        public IActionResult Edit(EditUserDto editUser)
+        public async Task<ActionResult<UserDto>> Edit(EditUserDto editUser)
         {
-            userService.Edit(editUser);
+            await userService.Edit(editUser);
 
             return Ok();
         }
 
         [HttpDelete]
-        public IActionResult Delete(int id)
+        public async Task<ActionResult<UserDto>> Delete(int id)
         {
-            userService.Delete(id);
+            await userService.Delete(id);
 
             return NoContent();
         }

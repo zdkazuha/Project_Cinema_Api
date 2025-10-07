@@ -4,10 +4,10 @@ namespace BusinessLogic.Interfaces
 {
     public interface IMovieActorService
     {
-        IList<MovieActorDto> GetAll(string? ActorName, string? MovieTitle, string? CharacterName);
-        MovieActorDto? Get(int id);
-        void Create(CreateMovieActorDto model);
-        void Edit(EditMovieActorDto model);
-        void Delete(int id);
+        Task<IList<MovieActorDto>> GetAll(string? ActorName, string? MovieTitle, string? CharacterName, int pageNumber);
+        Task<MovieActorDto?> Get(int id);
+        Task Create(CreateMovieActorDto model);
+        Task Edit(EditMovieActorDto model);
+        Task Delete(int id);
     }
 }

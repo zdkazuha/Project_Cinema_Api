@@ -4,10 +4,10 @@ namespace BusinessLogic.Interfaces
 {
     public interface IReviewService
     {
-        IList<ReviewDto> GetAll(string? Comment, string? UserName, string? MovieTitle);
-        ReviewDto? Get(int id);
-        void Create(CreateReviewDto model);
-        void Edit(EditReviewDto model);
-        void Delete(int id);
+        Task<IList<ReviewDto>> GetAll(string? Comment, string? UserName, string? MovieTitle, int pageNumber);
+        Task<ReviewDto?> Get(int id);
+        Task Create(CreateReviewDto model);
+        Task Edit(EditReviewDto model);
+        Task Delete(int id);
     }
 }

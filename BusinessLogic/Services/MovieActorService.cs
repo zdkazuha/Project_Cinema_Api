@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs.MovieActorDto;
+using BusinessLogic.Helpers;
 using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
@@ -19,15 +20,15 @@ namespace BusinessLogic.Services
             this.mapper = mapper;
         }
 
-        public void Create(CreateMovieActorDto model)
+        public async Task Create(CreateMovieActorDto model)
         {
             var movieActor = mapper.Map<MovieActor>(model);
 
             db.MovieActors.Add(movieActor);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
             if (id < 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
@@ -38,18 +39,18 @@ namespace BusinessLogic.Services
                 throw new HttpException($"Movie Actor with id-{id} not found ", HttpStatusCode.NotFound);
 
             db.MovieActors.Remove(movieActor);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
-        public void Edit(EditMovieActorDto model)
+        public async Task Edit(EditMovieActorDto model)
         {
             var movieActor = mapper.Map<MovieActor>(model);
 
             db.MovieActors.Update(movieActor);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
-        public IList<MovieActorDto> GetAll(string? ActorName, string? MovieTitle, string? CharacterName)
+        public async Task<IList<MovieActorDto>> GetAll(string? ActorName, string? MovieTitle, string? CharacterName, int pageNumber = 1)
         {
             IQueryable<MovieActor> movieActors = db.MovieActors
                 .Include(x => x.Movie)
@@ -73,17 +74,17 @@ namespace BusinessLogic.Services
                     .Where(x => x.CharacterName.Contains(CharacterName.ToLower()));
             }
 
-            var movieActorsDto = mapper.Map<IList<MovieActorDto>>(movieActors.ToList());
+            var movieActorsPaged = await PagedList<MovieActor>.CreateAsync(db.MovieActors, pageNumber, 5);
 
-            return movieActorsDto;
+            return mapper.Map<IList<MovieActorDto>>(movieActorsPaged);
         }
 
-        public MovieActorDto? Get(int id)
+        public async Task<MovieActorDto?> Get(int id)
         {
             if (id <= 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var movieActor = db.MovieActors.Find(id);
+            var movieActor = await db.MovieActors.FindAsync(id);
 
             if (movieActor == null)
                 throw new HttpException($"Movie Actor with id-{id} not found ", HttpStatusCode.NotFound);
