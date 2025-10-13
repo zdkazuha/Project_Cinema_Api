@@ -59,9 +59,9 @@ namespace BusinessLogic.Services
                     .Where(x => x.UserName.Contains(UserName.ToLower()));
             }
 
-            var usersPaged = await PagedList<User>.CreateAsync(users, numberPage, 50);
+            var usersPaged = await PagedList<User>.CreateAsync(users, numberPage, 5);
 
-            return mapper.Map<List<UserDto>>(usersPaged);
+            return mapper.Map<IList<UserDto>>(usersPaged);
         }
 
         public async Task<UserDto?> Get(int id)

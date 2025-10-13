@@ -74,9 +74,8 @@ namespace BusinessLogic.Services
                     .Where(x => x.CharacterName.Contains(CharacterName.ToLower()));
             }
 
-            var movieActorsPaged = await PagedList<MovieActor>.CreateAsync(db.MovieActors, pageNumber, 5);
-
-            return mapper.Map<IList<MovieActorDto>>(movieActorsPaged);
+            var movieActorsPaged = await PagedList<MovieActor>.CreateAsync(movieActors, pageNumber, 5);
+            return movieActorsPaged.Select(ma => mapper.Map<MovieActorDto>(ma)).ToList();
         }
 
         public async Task<MovieActorDto?> Get(int id)
@@ -84,7 +83,10 @@ namespace BusinessLogic.Services
             if (id <= 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var movieActor = await db.MovieActors.FindAsync(id);
+            var movieActor = await db.MovieActors
+                .Include(ma => ma.Movie)
+                .Include(ma => ma.Actor)
+                .FirstOrDefaultAsync(ma => ma.Id == id);
 
             if (movieActor == null)
                 throw new HttpException($"Movie Actor with id-{id} not found ", HttpStatusCode.NotFound);

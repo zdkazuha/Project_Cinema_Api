@@ -1,10 +1,5 @@
 ﻿using DataAccess.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Data
 {
@@ -79,24 +74,6 @@ namespace DataAccess.Data
                 new MovieActor() { Id = 3, MovieId = 2, ActorId = 3, CharacterName = "Bilbo Baggins" },
                 new MovieActor() { Id = 4, MovieId = 3, ActorId = 4, CharacterName = "Harry Potter" },
                 new MovieActor() { Id = 5, MovieId = 3, ActorId = 5, CharacterName = "Hermione Granger" }
-            });
-        }
-
-        public static void SeedUsers(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<User>().HasData(new[]
-            {
-                new User() { Id = 1, UserName = "JohnDoe" },
-                new User() { Id = 2, UserName = "JaneSmith" }
-            });
-        }
-
-        public static void SeedReviews(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Review>().HasData(new[]
-            {
-                new Review() { Id = 1, Comment = "Amazing movie!", MovieId = 1, UserId = 1 },
-                new Review() { Id = 2, Comment = "Loved the adventure.", MovieId = 2, UserId = 2 }
             });
         }
     }

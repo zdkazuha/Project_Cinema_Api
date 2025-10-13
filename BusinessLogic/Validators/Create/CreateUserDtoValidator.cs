@@ -11,6 +11,11 @@ namespace BusinessLogic.Validators.Create
                 .NotEmpty().WithMessage("UserName is required")
                 .MinimumLength(3).WithMessage("UserName must be at least 3 characters long")
                 .Matches("^[A-Z].*").WithMessage("{PropertyName} must start with uppercase letter.");
+
+            RuleFor(x => x.Country)
+                .NotEmpty().WithMessage("Country is required")
+                .MinimumLength(3).WithMessage("Country must be at least 3 characters long")
+                .Matches("^[A-Z].*").WithMessage("{PropertyName} must start with uppercase letter.");
         }
     }
 }

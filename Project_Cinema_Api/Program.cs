@@ -3,15 +3,17 @@ using BusinessLogic.Interfaces;
 using BusinessLogic.Services;
 using BusinessLogic.Validators.Create;
 using DataAccess.Data;
+using DataAccess.Data.Entities;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Project_Cinema_Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//string connStr = builder.Configuration.GetConnectionString("ConnStr") ?? throw new InvalidOperationException("No Connection String found.");
-string someeStr = builder.Configuration.GetConnectionString("SomeeStr") ?? throw new InvalidOperationException("No Connection String found.");
+string connStr = builder.Configuration.GetConnectionString("ConnStr") ?? throw new InvalidOperationException("No Connection String found.");
+//string someeStr = builder.Configuration.GetConnectionString("SomeeStr") ?? throw new InvalidOperationException("No Connection String found.");
 
 // Add services to the container.
 
@@ -27,8 +29,15 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateMovieDtoValidator>();
 //builder.Services.AddValidatorsFromAssemblyContaining<EditMovieDtoValidator>();
 
 builder.Services.AddDbContext<CinemaDbContext>(options =>
-    options.UseSqlServer(someeStr));
+    options.UseSqlServer(connStr));
 
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+    options.SignIn.RequireConfirmedAccount = false)
+    .AddDefaultTokenProviders()
+    .AddEntityFrameworkStores<CinemaDbContext>();
+
+
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IMovieActorService, MovieActorService>();
 builder.Services.AddScoped<IActorService, ActorService>();
 builder.Services.AddScoped<IMovieService, MovieService>();

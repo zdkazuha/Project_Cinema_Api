@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BusinessLogic.DTOs.Accounts;
 using BusinessLogic.DTOs.ActorDto;
 using BusinessLogic.DTOs.GenreDto;
 using BusinessLogic.DTOs.MovieActorDto;
@@ -42,6 +43,11 @@ namespace BusinessLogic.Configurations
             CreateMap<CreateMovieActorDto, MovieActor>();
             CreateMap<EditMovieActorDto, MovieActor>();
             CreateMap<MovieActorDto, MovieActor>().ReverseMap();
+
+            // Account
+            CreateMap<RegisterModel, User>()
+                .ForMember(x => x.UserName, opt => opt.MapFrom(model => model.Email))
+                .ForMember(x => x.PasswordHash, opt => opt.Ignore());
         }
     }
 }
