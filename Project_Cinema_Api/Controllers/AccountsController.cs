@@ -27,9 +27,9 @@ namespace Project_Cinema_Api.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            await accountService.Login(model);
+            var res = await accountService.Login(model);
 
-            return Ok();
+            return Ok(res);
         }
 
         [HttpPost("Logout")]

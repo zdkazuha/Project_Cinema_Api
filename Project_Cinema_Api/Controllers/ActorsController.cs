@@ -1,10 +1,13 @@
 ﻿using BusinessLogic.DTOs.ActorDto;
 using BusinessLogic.Interfaces;
 using DataAccess.Data.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Project_Cinema_Api.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class ActorsController : ControllerBase
