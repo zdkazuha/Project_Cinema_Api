@@ -4,6 +4,7 @@ using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Project_Cinema_Api.Helpers;
 
 namespace Project_Cinema_Api.Controllers
 {
@@ -49,6 +50,7 @@ namespace Project_Cinema_Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete]
         public async Task<ActionResult<GenreDto>> Delete(int id)
         {

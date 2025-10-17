@@ -1,6 +1,9 @@
 ﻿using BusinessLogic.DTOs.Accounts;
 using BusinessLogic.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Project_Cinema_Api.Helpers;
 
 namespace Project_Cinema_Api.Controllers
 {
@@ -40,6 +43,7 @@ namespace Project_Cinema_Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("Refresh")]
         public async Task<IActionResult> Refresh(RefreshRequest refreshRequest)
         {
