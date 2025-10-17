@@ -4,18 +4,19 @@ using BusinessLogic.Helpers;
 using BusinessLogic.Interfaces;
 using DataAccess.Data;
 using DataAccess.Data.Entities;
+using DataAccess.Repositories;
 using System.Net;
 
 namespace BusinessLogic.Services
 {
     public class UserService : IUserService
     {
-        private readonly CinemaDbContext db;
+        private readonly IRepository<User> repo;
         private readonly IMapper mapper;
 
-        public UserService(CinemaDbContext db, IMapper mapper)
+        public UserService(IRepository<User> repo, IMapper mapper)
         {
-            this.db = db;
+            this.repo = repo;
             this.mapper = mapper;
         }
 
@@ -23,8 +24,10 @@ namespace BusinessLogic.Services
         {
             var user = mapper.Map<User>(model);
 
-            db.Users.Add(user);
-            await db.SaveChangesAsync();
+            if(user == null)
+                throw new HttpException("User is null ", HttpStatusCode.BadRequest);
+
+            await repo.AddAsync(user);
         }
 
         public async Task Delete(int id)
@@ -32,36 +35,26 @@ namespace BusinessLogic.Services
             if (id < 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var user = db.Users.Find(id);
+            var user = repo.GetByIdAsync(id);
 
             if (user == null)
                 throw new HttpException($"User with id-{id} not found ", HttpStatusCode.NotFound);
 
-            db.Users.Remove(user);
-            await db.SaveChangesAsync();
+            await repo.DeleteAsync(id);
         }
 
         public async Task Edit(EditUserDto model)
         {
             var user = mapper.Map<User>(model);
 
-            db.Users.Update(user);
-            await db.SaveChangesAsync();
+            await repo.UpdateAsync(user);
         }
 
         public async Task<IList<UserDto>> GetAll(string? UserName, int numberPage = 1)
         {
-            IQueryable<User> users = db.Users;
+            var users = await repo.GetAllAsync(numberPage, 5);
 
-            if (UserName != null)
-            {
-                users = db.Users
-                    .Where(x => x.UserName.Contains(UserName.ToLower()));
-            }
-
-            var usersPaged = await PagedList<User>.CreateAsync(users, numberPage, 5);
-
-            return mapper.Map<IList<UserDto>>(usersPaged);
+            return mapper.Map<IList<UserDto>>(users);
         }
 
         public async Task<UserDto?> Get(int id)
@@ -69,7 +62,7 @@ namespace BusinessLogic.Services
             if (id <= 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var user = await db.Users.FindAsync(id);
+            var user = await repo.GetByIdAsync(id);
 
             if (user == null)
                 throw new HttpException($"User with id-{id} not found ", HttpStatusCode.NotFound);

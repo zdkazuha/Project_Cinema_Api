@@ -1,6 +1,7 @@
 ﻿using BusinessLogic.DTOs.UserDto;
 using BusinessLogic.Interfaces;
 using DataAccess.Data.Entities;
+using DataAccess.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,13 +9,11 @@ using Project_Cinema_Api.Helpers;
 
 namespace Project_Cinema_Api.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
         private readonly IUserService userService;
-
         public UsersController(IUserService userService)
         {
             this.userService = userService;
@@ -33,6 +32,7 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<User>> Create(CreateUserDto createUser)
         {
             await userService.Create(createUser);
@@ -41,6 +41,7 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<UserDto>> Edit(EditUserDto editUser)
         {
             await userService.Edit(editUser);
@@ -48,8 +49,8 @@ namespace Project_Cinema_Api.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete]
+        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<UserDto>> Delete(int id)
         {
             await userService.Delete(id);

@@ -43,8 +43,8 @@ namespace Project_Cinema_Api.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("Refresh")]
+        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Refresh(RefreshRequest refreshRequest)
         {
             return Ok(await accountService.Refresh(refreshRequest, CurrentIp));

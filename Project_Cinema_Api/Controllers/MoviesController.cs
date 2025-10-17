@@ -8,7 +8,6 @@ using Project_Cinema_Api.Helpers;
 
 namespace Project_Cinema_Api.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class MoviesController : ControllerBase
@@ -38,6 +37,7 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<Movie>> Created(CreateMovieDto createMovie)
         {
             await movieService.Create(createMovie);
@@ -46,6 +46,7 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<MovieDto>> Edit(EditMovieDto editMovie)
         {
             await movieService.Edit(editMovie);
@@ -53,8 +54,8 @@ namespace Project_Cinema_Api.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete]
+        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<MovieDto>> Delete(int id)
         {
             await movieService.Delete(id);

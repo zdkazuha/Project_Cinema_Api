@@ -8,7 +8,6 @@ using Project_Cinema_Api.Helpers;
 
 namespace Project_Cinema_Api.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class ActorsController : ControllerBase
@@ -33,6 +32,7 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<Actor>> Create(CreateActorDto createActor)
         {
             await actorService.Create(createActor);
@@ -41,6 +41,7 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<ActorDto>>> Update(EditActorDto editActor)
         {
             await actorService.Edit(editActor);
@@ -48,8 +49,8 @@ namespace Project_Cinema_Api.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete]
+        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete(int id)
         {
             await actorService.Delete(id);

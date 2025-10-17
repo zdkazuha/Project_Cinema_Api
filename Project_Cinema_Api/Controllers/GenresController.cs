@@ -8,7 +8,6 @@ using Project_Cinema_Api.Helpers;
 
 namespace Project_Cinema_Api.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class GenresController : ControllerBase
@@ -35,6 +34,7 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<Genre>> Create(CreateGenreDto createGenre)
         {
             await genreService.Create(createGenre);
@@ -43,6 +43,7 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<GenreDto>> Edit(EditGenreDto editGenre)
         {
             await genreService.Edit(editGenre);
@@ -50,8 +51,8 @@ namespace Project_Cinema_Api.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete]
+        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<GenreDto>> Delete(int id)
         {
             await genreService.Delete(id);
