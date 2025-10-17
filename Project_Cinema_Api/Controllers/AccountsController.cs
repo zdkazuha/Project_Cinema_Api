@@ -1,7 +1,5 @@
 ﻿using BusinessLogic.DTOs.Accounts;
 using BusinessLogic.Interfaces;
-using DataAccess.Data.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Project_Cinema_Api.Controllers

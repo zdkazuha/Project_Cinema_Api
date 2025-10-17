@@ -7,13 +7,10 @@ using DataAccess.Data;
 using DataAccess.Data.Entities;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Project_Cinema_Api;
-using System.Text;
+using Project_Cinema_Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +53,8 @@ builder.Services.AddJWTSettings(jwtOpts);
 builder.Services.AddSwaggerWithJWT();
 
 var app = builder.Build();
+
+app.SeedRoleAndInitialAdmin();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

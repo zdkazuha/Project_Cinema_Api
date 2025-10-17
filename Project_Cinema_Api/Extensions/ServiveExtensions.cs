@@ -2,10 +2,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Project_Cinema_Api
+namespace Project_Cinema_Api.Extensions
 {
     public static class ServiveExtensions
     {

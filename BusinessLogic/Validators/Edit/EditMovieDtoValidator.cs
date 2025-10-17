@@ -1,5 +1,4 @@
-﻿using BusinessLogic.DTOs.MovieDto;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace BusinessLogic.Validators.Create
 {

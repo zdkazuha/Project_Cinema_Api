@@ -1,5 +1,4 @@
-﻿using BusinessLogic.DTOs.ReviewDto;
-using BusinessLogic.DTOs.UserDto;
+﻿using BusinessLogic.DTOs.UserDto;
 using FluentValidation;
 
 namespace BusinessLogic.Validators.Create
