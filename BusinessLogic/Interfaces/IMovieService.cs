@@ -4,7 +4,7 @@ namespace BusinessLogic.Interfaces
 {
     public interface IMovieService
     {
-        Task<IList<MovieDto>> GetAll(string? Title, string? Overview, double? Rating, bool? sortByBudgetAscending, int pageNumber);
+        Task<IList<MovieDto>> GetAll(string? Title, string? Overview, double? Rating, int pageNumber);
         Task<MovieDto?> Get(int id);
         Task Create(CreateMovieDto model);
         Task Edit(EditMovieDto model);

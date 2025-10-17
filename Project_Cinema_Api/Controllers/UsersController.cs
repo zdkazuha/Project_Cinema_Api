@@ -1,7 +1,6 @@
 ﻿using BusinessLogic.DTOs.UserDto;
 using BusinessLogic.Interfaces;
 using DataAccess.Data.Entities;
-using DataAccess.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +25,7 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<UserDto>> GetUserById(int id)
+        public async Task<ActionResult<UserDto>> GetUserById(string id)
         {
             return Ok(await userService.Get(id));
         }

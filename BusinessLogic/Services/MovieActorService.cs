@@ -1,22 +1,21 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs.MovieActorDto;
-using BusinessLogic.Helpers;
 using BusinessLogic.Interfaces;
-using DataAccess.Data;
 using DataAccess.Data.Entities;
-using Microsoft.EntityFrameworkCore;
+using DataAccess.Repositories;
+using LinqKit;
 using System.Net;
 
 namespace BusinessLogic.Services
 {
     public class MovieActorService : IMovieActorService
     {
-        private readonly CinemaDbContext db;
+        private readonly IRepository<MovieActor> repo;
         private readonly IMapper mapper;
 
-        public MovieActorService(CinemaDbContext db, IMapper mapper)
+        public MovieActorService(IRepository<MovieActor> repo, IMapper mapper)
         {
-            this.db = db;
+            this.repo = repo;
             this.mapper = mapper;
         }
 
@@ -24,8 +23,7 @@ namespace BusinessLogic.Services
         {
             var movieActor = mapper.Map<MovieActor>(model);
 
-            db.MovieActors.Add(movieActor);
-            await db.SaveChangesAsync();
+            await repo.AddAsync(movieActor);
         }
 
         public async Task Delete(int id)
@@ -33,48 +31,36 @@ namespace BusinessLogic.Services
             if (id < 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var movieActor = db.MovieActors.Find(id);
+            var movieActor = await repo.GetByIdAsync(id);
 
             if (movieActor == null)
                 throw new HttpException($"Movie Actor with id-{id} not found ", HttpStatusCode.NotFound);
 
-            db.MovieActors.Remove(movieActor);
-            await db.SaveChangesAsync();
+            await repo.DeleteAsync(movieActor);
         }
 
         public async Task Edit(EditMovieActorDto model)
         {
             var movieActor = mapper.Map<MovieActor>(model);
 
-            db.MovieActors.Update(movieActor);
-            await db.SaveChangesAsync();
+            await repo.UpdateAsync(movieActor);
         }
 
         public async Task<IList<MovieActorDto>> GetAll(string? ActorName, string? MovieTitle, string? CharacterName, int pageNumber = 1)
         {
-            IQueryable<MovieActor> movieActors = db.MovieActors
-                .Include(x => x.Movie)
-                .Include(x => x.Actor);
+            var filterEx = PredicateBuilder.New<MovieActor>(true);
 
             if (ActorName != null)
-            {
-                movieActors = movieActors
-                    .Where(x => x.Actor.Name.Contains(ActorName.ToLower()));
-            }
+                filterEx.And(x => x.Actor.Name.Contains(ActorName.ToLower()));
 
             if (MovieTitle != null)
-            {
-                movieActors = movieActors
-                    .Where(x => x.Movie.Title.Contains(MovieTitle.ToLower()));
-            }
+                filterEx.And(x => x.Movie.Title.Contains(MovieTitle.ToLower()));
 
             if (CharacterName != null)
-            {
-                movieActors = movieActors
-                    .Where(x => x.CharacterName.Contains(CharacterName.ToLower()));
-            }
+                filterEx.And(x => x.CharacterName.Contains(CharacterName.ToLower()));
 
-            var movieActorsPaged = await PagedList<MovieActor>.CreateAsync(movieActors, pageNumber, 5);
+            var movieActorsPaged = await repo.GetAllAsync(pageNumber, 5, filterEx, "Movie", "Actor");
+
             return movieActorsPaged.Select(ma => mapper.Map<MovieActorDto>(ma)).ToList();
         }
 
@@ -83,10 +69,7 @@ namespace BusinessLogic.Services
             if (id <= 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var movieActor = await db.MovieActors
-                .Include(ma => ma.Movie)
-                .Include(ma => ma.Actor)
-                .FirstOrDefaultAsync(ma => ma.Id == id);
+            var movieActor = await repo.GetByIdAsync(id, "Movie", "Actor");
 
             if (movieActor == null)
                 throw new HttpException($"Movie Actor with id-{id} not found ", HttpStatusCode.NotFound);

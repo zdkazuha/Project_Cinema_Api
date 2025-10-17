@@ -28,7 +28,7 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var res = await accountService.Login(model, CurrentIp);
 
@@ -44,7 +44,6 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpPost("Refresh")]
-        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Refresh(RefreshRequest refreshRequest)
         {
             return Ok(await accountService.Refresh(refreshRequest, CurrentIp));

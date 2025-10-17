@@ -28,9 +28,7 @@ namespace Project_Cinema_Api.Controllers
         [HttpGet]
         public async Task<ActionResult<GenreDto>> GetGenreById(int id)
         {
-            await genreService.Get(id);
-
-            return Ok(genreService.Get(id));
+            return Ok(await genreService.Get(id));
         }
 
         [HttpPost]

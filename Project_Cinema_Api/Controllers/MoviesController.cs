@@ -20,14 +20,14 @@ namespace Project_Cinema_Api.Controllers
         }
 
         [HttpGet("All")]
-        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies(string? Title, string? Overview, double? Rating, bool? sortByBudgetAscending, int pageNumber = 1)
+        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies(string? Title, string? Overview, double? Rating, int pageNumber = 1)
         {
             if(pageNumber <= 0)
             {
                 return BadRequest("Page number must be greater than 0.");
             }
 
-            return Ok(await movieService.GetAll(Title, Overview, Rating, sortByBudgetAscending, pageNumber));
+            return Ok(await movieService.GetAll(Title, Overview, Rating, pageNumber));
         }
 
         [HttpGet]

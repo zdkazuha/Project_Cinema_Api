@@ -15,14 +15,12 @@ namespace BusinessLogic.Services
     {
         private readonly IConfiguration configuration;
         private readonly UserManager<User> userManager;
-        private readonly JwtOptions jwtOptions; 
+        private readonly JwtOptions jwtOptions;
         private readonly RandomNumberGenerator rng = RandomNumberGenerator.Create();
 
-        public JwtService(
-            IConfiguration configuration,
+        public JwtService(IConfiguration configuration,
             UserManager<User> userManager,
-            JwtOptions jwtOptions
-            )
+            JwtOptions jwtOptions)
         {
             this.configuration = configuration;
             this.userManager = userManager;
@@ -60,9 +58,9 @@ namespace BusinessLogic.Services
         {
             var claims = new List<Claim>
             {
-                new (ClaimTypes.NameIdentifier, user.Id),
-                new (ClaimTypes.Email, user.Email ?? string.Empty),
-                new (ClaimTypes.Country, user.Country ?? string.Empty)
+                new(ClaimTypes.NameIdentifier, user.Id),
+                new(ClaimTypes.Email, user.Email ?? string.Empty),
+                new(ClaimTypes.Country, user.Country ?? string.Empty)
             };
 
             var roles = userManager.GetRolesAsync(user).Result;

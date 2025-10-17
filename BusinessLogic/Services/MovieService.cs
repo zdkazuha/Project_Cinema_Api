@@ -1,21 +1,21 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs.MovieDto;
-using BusinessLogic.Helpers;
 using BusinessLogic.Interfaces;
-using DataAccess.Data;
 using DataAccess.Data.Entities;
+using DataAccess.Repositories;
+using LinqKit;
 using System.Net;
 
 namespace BusinessLogic.Services
 {
     public class MovieService : IMovieService
     {
-        private readonly CinemaDbContext db;
+        private readonly IRepository<Movie> repo;
         private readonly IMapper mapper;
 
-        public MovieService(CinemaDbContext db, IMapper mapper)
+        public MovieService(IRepository<Movie> repo, IMapper mapper)
         {
-            this.db = db;
+            this.repo = repo;
             this.mapper = mapper;
         }
 
@@ -23,8 +23,7 @@ namespace BusinessLogic.Services
         {
             var movie = mapper.Map<Movie>(model);
 
-            db.Movies.Add(movie);
-            await db.SaveChangesAsync();
+            await repo.AddAsync(movie);
         }
 
         public async Task Delete(int id)
@@ -32,54 +31,41 @@ namespace BusinessLogic.Services
             if (id <= 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var movie = db.Movies.Find(id);
+            var movie = await repo.GetByIdAsync(id);
 
             if (movie == null)
                 throw new HttpException($"Movie with id-{id} not found ", HttpStatusCode.NotFound);
 
-            db.Movies.Remove(movie);
-            await db.SaveChangesAsync();
+            await repo.DeleteAsync(movie);
         }
 
         public async Task Edit(EditMovieDto model)
         {
             var movie = mapper.Map<Movie>(model);
 
-            db.Movies.Update(movie);
-            await db.SaveChangesAsync();
+            await repo.UpdateAsync(movie);
         }
 
-        public async Task<IList<MovieDto>> GetAll(string? Title, string? Overview, double? Rating, bool? sortByBudgetAscending, int pageNumber = 1)
+        public async Task<IList<MovieDto>> GetAll(string? Title, string? Overview, double? Rating, int pageNumber = 1)
         {
-            IQueryable<Movie> movies = db.Movies;
+            var filterEx = PredicateBuilder.New<Movie>(true);
 
             if (Title != null)
             {
-                movies = movies
-                    .Where(x => x.Title.Contains(Title.ToLower()));
+                filterEx.And(x => x.Title.Contains(Title.ToLower()));
             }
 
             if (Overview != null)
             {
-                movies = movies
-                    .Where(x => x.Overview.Contains(Overview.ToLower()));
+                filterEx.And(x => x.Overview.Contains(Overview.ToLower()));
             }
 
             if (Rating != null)
             {
-                movies = movies
-                    .Where(x => x.Rating == Rating);
+                filterEx.And(x => x.Rating == Rating);
             }
 
-            if (sortByBudgetAscending != null)
-            {
-                movies = sortByBudgetAscending == true
-                    ? movies.OrderBy(x => x.Budget)
-                    : movies.OrderByDescending(x => x.Budget);
-            }
-
-
-            var moviesDto = await PagedList<Movie>.CreateAsync(db.Movies, pageNumber, 5);
+            var moviesDto = await repo.GetAllAsync(pageNumber, 5, filterEx);
 
             return mapper.Map<IList<MovieDto>>(moviesDto);
         }
@@ -89,7 +75,7 @@ namespace BusinessLogic.Services
             if (id <= 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var movie = await db.Movies.FindAsync(id);
+            var movie = await repo.GetByIdAsync(id);
 
             if (movie == null)
                 throw new HttpException($"Movie with id-{id} not found ", HttpStatusCode.NotFound);

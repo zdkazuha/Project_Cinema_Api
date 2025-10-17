@@ -1,21 +1,21 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs.GenreDto;
-using BusinessLogic.Helpers;
 using BusinessLogic.Interfaces;
-using DataAccess.Data;
 using DataAccess.Data.Entities;
+using DataAccess.Repositories;
+using LinqKit;
 using System.Net;
 
 namespace BusinessLogic.Services
 {
     public class GenreService : IGenreService
     {
-        private readonly CinemaDbContext db;
+        private readonly IRepository<Genre> repo;
         private readonly IMapper mapper;
 
-        public GenreService(CinemaDbContext db, IMapper mapper)
+        public GenreService(IRepository<Genre> repo, IMapper mapper)
         {
-            this.db = db;
+            this.repo = repo;
             this.mapper = mapper;
         }
 
@@ -23,8 +23,7 @@ namespace BusinessLogic.Services
         {
             var genre = mapper.Map<Genre>(model);
 
-            db.Genres.Add(genre);
-            await db.SaveChangesAsync();
+            await repo.AddAsync(genre);
         }
 
         public async Task Delete(int id)
@@ -32,34 +31,29 @@ namespace BusinessLogic.Services
             if (id < 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var genre = db.Genres.Find(id);
+            var genre = await repo.GetByIdAsync(id);
 
             if (genre == null)
                 throw new HttpException($"Genre with id-{id} not found ", HttpStatusCode.NotFound);
 
-            db.Genres.Remove(genre);
-            await db.SaveChangesAsync();
+            await repo.DeleteAsync(genre);
         }
 
         public async Task Edit(EditGenreDto model)
         {
             var genre = mapper.Map<Genre>(model);
 
-            db.Genres.Update(genre);
-            await db.SaveChangesAsync();
+            await repo.UpdateAsync(genre);
         }
 
         public async Task<IList<GenreDto>> GetAll(string? GenreName, int pageNumber = 1)
         {
-            IQueryable<Genre> genres = db.Genres;
+            var filterEx = PredicateBuilder.New<Genre>(true);
 
             if (GenreName != null)
-            {
-                genres = db.Genres
-                    .Where(g => g.Name.Contains(GenreName.ToLower()));
-            }
+                filterEx.And(g => g.Name.Contains(GenreName.ToLower()));
 
-            var genresPaged = await PagedList<Genre>.CreateAsync(genres, pageNumber, 5);
+            var genresPaged = await repo.GetAllAsync(pageNumber, 5, filterEx);
 
             return mapper.Map<IList<GenreDto>>(genresPaged);
         }
@@ -69,7 +63,7 @@ namespace BusinessLogic.Services
             if (id <= 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var genre = await db.Genres.FindAsync(id);
+            var genre = await repo.GetByIdAsync(id);
 
             if (genre == null)
                 throw new HttpException($"Genre with id-{id} not found ", HttpStatusCode.NotFound);

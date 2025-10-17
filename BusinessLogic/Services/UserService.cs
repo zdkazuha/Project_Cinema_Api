@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs.UserDto;
-using BusinessLogic.Helpers;
 using BusinessLogic.Interfaces;
-using DataAccess.Data;
 using DataAccess.Data.Entities;
 using DataAccess.Repositories;
+using LinqKit;
 using System.Net;
 
 namespace BusinessLogic.Services
@@ -52,15 +51,22 @@ namespace BusinessLogic.Services
 
         public async Task<IList<UserDto>> GetAll(string? UserName, int numberPage = 1)
         {
-            var users = await repo.GetAllAsync(numberPage, 5);
+            var filterEx = PredicateBuilder.New<User>(true);
+
+            if(!string.IsNullOrEmpty(UserName))
+            {
+                filterEx = filterEx.And(u => u.UserName.Contains(UserName.ToLower()));
+            }
+
+            var users = await repo.GetAllAsync(numberPage, 5, filterEx);
 
             return mapper.Map<IList<UserDto>>(users);
         }
 
-        public async Task<UserDto?> Get(int id)
+        public async Task<UserDto?> Get(string id)
         {
-            if (id <= 0)
-                throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
+            if (string.IsNullOrEmpty(id))
+                throw new HttpException("Id is null or empty", HttpStatusCode.BadRequest);
 
             var user = await repo.GetByIdAsync(id);
 

@@ -1,22 +1,21 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs.ReviewDto;
-using BusinessLogic.Helpers;
 using BusinessLogic.Interfaces;
-using DataAccess.Data;
 using DataAccess.Data.Entities;
-using Microsoft.EntityFrameworkCore;
+using DataAccess.Repositories;
+using LinqKit;
 using System.Net;
 
 namespace BusinessLogic.Services
 {
     public class ReviewService : IReviewService
     {
-        private readonly CinemaDbContext db;
+        private readonly IRepository<Review> repo;
         private readonly IMapper mapper;
 
-        public ReviewService(CinemaDbContext db, IMapper mapper)
+        public ReviewService(IRepository<Review> repo, IMapper mapper)
         {
-            this.db = db;
+            this.repo = repo;
             this.mapper = mapper;
         }
 
@@ -24,8 +23,7 @@ namespace BusinessLogic.Services
         {
             var review = mapper.Map<Review>(model);
 
-            db.Reviews.Add(review);
-            await db.SaveChangesAsync();
+            await repo.AddAsync(review);
         }
 
         public async Task Delete(int id)
@@ -33,50 +31,37 @@ namespace BusinessLogic.Services
             if (id < 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var review = db.Reviews.Find(id);
+            var review = await repo.GetByIdAsync(id);
 
             if (review == null)
                 throw new HttpException($"Review with id-{id} not found ", HttpStatusCode.NotFound);
 
-            db.Reviews.Remove(review);
-            await db.SaveChangesAsync();
+            await repo.DeleteAsync(review);
         }
 
         public async Task Edit(EditReviewDto model)
         {
             var review = mapper.Map<Review>(model);
 
-            db.Reviews.Update(review);
-            await db.SaveChangesAsync();
+            await repo.UpdateAsync(review);
         }
 
         public async Task<IList<ReviewDto>> GetAll(string? Comment, string? UserName, string? MovieTitle, int numberPage = 1)
         {
-            IQueryable<Review> reviews = db.Reviews
-                .Include(x => x.Movie)
-                .Include(x => x.User);
+            var filterEx = PredicateBuilder.New<Review>(true);
 
             if (Comment != null)
-            {
-                reviews = reviews
-                    .Where(x => x.Comment.Contains(Comment.ToLower()));
-            }
+                filterEx.And(x => x.Comment.Contains(Comment.ToLower()));
 
             if (UserName != null)
-            {
-                reviews = reviews
-                    .Where(x => x.User.UserName.Contains(UserName.ToLower()));
-            }
+                filterEx.And(x => x.User!.UserName!.Contains(UserName.ToLower()));
 
             if (MovieTitle != null)
-            {
-                reviews = reviews
-                    .Where(x => x.Movie.Title.Contains(MovieTitle.ToLower()));
-            }
+                filterEx.And(x => x.Movie.Title.Contains(MovieTitle.ToLower()));
 
-            var reviewsPaged = await PagedList<Review>.CreateAsync(reviews, numberPage, 5);
+            var reviews = await repo.GetAllAsync(numberPage, 5, filterEx, "User", "Movie");
 
-            return mapper.Map<IList<ReviewDto>>(reviewsPaged);
+            return mapper.Map<IList<ReviewDto>>(reviews);
         }
 
         public async Task<ReviewDto?> Get(int id)
@@ -84,7 +69,7 @@ namespace BusinessLogic.Services
             if (id <= 0)
                 throw new HttpException("Id can`t be negative ", HttpStatusCode.BadRequest);
 
-            var review = await db.Reviews.FindAsync(id);
+            var review = await repo.GetByIdAsync(id, "Movie", "User");
 
             if (review == null) 
                 throw new HttpException($"Review with id-{id} not found ", HttpStatusCode.NotFound);
