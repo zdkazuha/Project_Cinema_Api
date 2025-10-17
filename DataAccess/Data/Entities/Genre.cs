@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Data.Entities
 {
-    public class Genre
+    public class Genre : BaseEntity
     {
         public int Id { get; set; }
 

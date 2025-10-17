@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Data.Entities
 {
-    public class Actor
+    public class Actor : BaseEntity
     {
         public int Id { get; set; }
 

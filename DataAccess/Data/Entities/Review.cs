@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Data.Entities
 {
-    public class Review
+    public class Review : BaseEntity
     {
         public int Id{ get; set; }
 

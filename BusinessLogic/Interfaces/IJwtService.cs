@@ -10,8 +10,8 @@ namespace BusinessLogic.Interfaces
 {
     public interface IJwtService
     {
-        // ------- Access Token
         IEnumerable<Claim> GetClaims(User user);
         string GenerateToken(IEnumerable<Claim> claims);
+        RefreshToken GenerateRefreshToken(string ipAddress);
     }
 }

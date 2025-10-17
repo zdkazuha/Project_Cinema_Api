@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.DTOs.Accounts;
 using BusinessLogic.Interfaces;
+using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,7 @@ namespace Project_Cinema_Api.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService accountService;
+        private string? CurrentIp => HttpContext.Connection.RemoteIpAddress?.ToString();
 
         public AccountsController(IAccountService accountService)
         {
@@ -27,7 +29,7 @@ namespace Project_Cinema_Api.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            var res = await accountService.Login(model);
+            var res = await accountService.Login(model, CurrentIp);
 
             return Ok(res);
         }
@@ -38,6 +40,12 @@ namespace Project_Cinema_Api.Controllers
             await accountService.Logout(model);
 
             return Ok();
+        }
+
+        [HttpPost("Refresh")]
+        public async Task<IActionResult> Refresh(RefreshRequest refreshRequest)
+        {
+            return Ok(await accountService.Refresh(refreshRequest, CurrentIp));
         }
     }
 }

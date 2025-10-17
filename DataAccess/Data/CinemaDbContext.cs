@@ -9,11 +9,12 @@ namespace DataAccess.Data
     {
         public CinemaDbContext(DbContextOptions<CinemaDbContext> options) : base(options) { }
 
-        public DbSet<Actor> Actors { get; set; }
-        public DbSet<Genre> Genres { get; set; }
-        public DbSet<MovieActor> MovieActors { get; set; }
-        public DbSet<Movie> Movies { get; set; }
-        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Actor> Actors { get; set; } = default!;
+        public DbSet<Genre> Genres { get; set; } = default!;
+        public DbSet<MovieActor> MovieActors { get; set; } = default!;
+        public DbSet<Movie> Movies { get; set; } = default!;
+        public DbSet<Review> Reviews { get; set; } = default!;
+        public DbSet<RefreshToken> RefreshTokens { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,12 +25,5 @@ namespace DataAccess.Data
             modelBuilder.SeedActors();
             modelBuilder.SeedMovieActors();
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.ConfigureWarnings(warnings =>
-                warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
-        }
-
     }
 }
